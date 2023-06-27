@@ -46,5 +46,6 @@ DEAL_II_INITIALIZE_CACHED_VARIABLES()
 SET(TARGET "subduction_plate_cooling")
 PROJECT(${TARGET})
 
-ADD_LIBRARY(${TARGET} SHARED subduction_plate_cooling.cc composition_trms_statistics.cc)
+ADD_LIBRARY(${TARGET} SHARED subduction_plate_cooling.cc composition_trms_statistics.cc
+ isotherm_depth.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})
