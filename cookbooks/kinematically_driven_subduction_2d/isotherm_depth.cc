@@ -92,7 +92,7 @@ namespace aspect
       }
 
       std::ostringstream output;
-      output.precision(6);
+      output.precision(4);
       output << isotherm_depth
              << " m ";
       return std::pair<std::string, std::string> ("Isotherm depth [m]:",
