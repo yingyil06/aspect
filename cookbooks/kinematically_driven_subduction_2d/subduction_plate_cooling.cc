@@ -38,13 +38,13 @@ namespace aspect
                   ExcMessage("Subduction plate cooling initial temperature is not implemented "
                              "for any other geometry model than a box. ") );
 
-      // Model domain is 3000 x 670 km. 
+      // Model domain is 3000 x 670 km.
       // Geometry constants:
       // surface temperature
       const double Ts=273.15;
       // temperature at the base of the plates
       const double Tm = 1573.15;
-      // the base of the subducting plate at 110 km depth 
+      // the base of the subducting plate at 110 km depth
       const double y70 = -110000.0;
       // the base of the overriding plate at 82 km depth
       const double y40 = -82000.0;
@@ -60,26 +60,26 @@ namespace aspect
 
       // overriding plate + subduction interface
       if (position[0] < 1500000.0)
-      { 
-        // lithosphere
-        if (position[1] >= 588000.0) 
-           temperature=Ts+(Tm-Ts)*( ((position[1]-670000.0)/y40) + (2.0/numbers::PI)*(std::exp((-kappa*numbers::PI*numbers::PI*t40)/(y40*y40))*std::sin(numbers::PI*(position[1]-670000.0)/y40) +
-           0.5*std::exp((-kappa*2.0*2.0*numbers::PI*numbers::PI*t40)/(y40*y40))*std::sin(2.0*numbers::PI*(position[1]-670000.0)/y40)));
-        // sublithospheric mantle
-        else
-           temperature=-0.25*(position[1]/1000.0)+1720.15;
-      }
+        {
+          // lithosphere
+          if (position[1] >= 588000.0)
+            temperature=Ts+(Tm-Ts)*( ((position[1]-670000.0)/y40) + (2.0/numbers::PI)*(std::exp((-kappa*numbers::PI*numbers::PI*t40)/(y40*y40))*std::sin(numbers::PI*(position[1]-670000.0)/y40) +
+                                                                                       0.5*std::exp((-kappa*2.0*2.0*numbers::PI*numbers::PI*t40)/(y40*y40))*std::sin(2.0*numbers::PI*(position[1]-670000.0)/y40)));
+          // sublithospheric mantle
+          else
+            temperature=-0.25*(position[1]/1000.0)+1720.15;
+        }
       // subducting plate
       else
-      {
-        // lithosphere
-        if (position[1] >= 560000.0)
-           temperature=Ts+(Tm-Ts)*( ((position[1]-670000.0)/y70) + (2.0/numbers::PI)*(std::exp((-kappa*numbers::PI*numbers::PI*t70)/(y70*y70))*std::sin(numbers::PI*(position[1]-670000.0)/y70) +
-           0.5*std::exp((-kappa*2.0*2.0*numbers::PI*numbers::PI*t70)/(y70*y70))*std::sin(2.0*numbers::PI*(position[1]-670000.0)/y70)));
-        // sublithospheric mantle
-        else
-           temperature=-0.25*(position[1]/1000.0)+1713.15;
-      }
+        {
+          // lithosphere
+          if (position[1] >= 560000.0)
+            temperature=Ts+(Tm-Ts)*( ((position[1]-670000.0)/y70) + (2.0/numbers::PI)*(std::exp((-kappa*numbers::PI*numbers::PI*t70)/(y70*y70))*std::sin(numbers::PI*(position[1]-670000.0)/y70) +
+                                                                                       0.5*std::exp((-kappa*2.0*2.0*numbers::PI*numbers::PI*t70)/(y70*y70))*std::sin(2.0*numbers::PI*(position[1]-670000.0)/y70)));
+          // sublithospheric mantle
+          else
+            temperature=-0.25*(position[1]/1000.0)+1713.15;
+        }
       return temperature;
     }
   }
