@@ -47,5 +47,5 @@ SET(TARGET "subduction_plate_cooling")
 PROJECT(${TARGET})
 
 ADD_LIBRARY(${TARGET} SHARED subduction_plate_cooling.cc composition_trms_statistics.cc
- isotherm_depth.cc)
+ isotherm_depth.cc trench_location.cc)
 ASPECT_SETUP_PLUGIN(${TARGET})
