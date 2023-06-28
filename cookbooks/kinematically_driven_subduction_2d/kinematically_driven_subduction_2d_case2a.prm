@@ -15,7 +15,7 @@
 
 set Additional shared libraries            = /scratch/usr/bbpanneg/software/aspect/QQ_subduction_cookbook/shared_libs/build_release/lib2d_driven_subduction_box.so
 
-# 2D 
+# 2D
 set Dimension                              = 2
 
 # Reuse parts of case 1
@@ -25,11 +25,11 @@ set Output directory                       = output-Case2a
 
 
 # We fix temperature on the top and bottom
-# as well as on the right boundary because 
+# as well as on the right boundary because
 # we have inflow through the latter.
 subsection Boundary temperature model
-  set Fixed temperature boundary indicators   = bottom, top, right 
-  set List of model names = initial temperature 
+  set Fixed temperature boundary indicators   = bottom, top, right
+  set List of model names = initial temperature
 end
 
 
@@ -38,12 +38,12 @@ subsection Material model
 
   subsection Multicomponent
     # TODO the benchmark uses different reference temperatures for each composition
-    #set Reference temperature         = 1573.15,473.15,473.15,473.15,473.15,1573.15,1573.15,1573.15 
+    #set Reference temperature         = 1573.15,473.15,473.15,473.15,473.15,1573.15,1573.15,1573.15
     set Reference temperature         = 473.15
-    set Viscosity averaging scheme    = maximum composition 
+    set Viscosity averaging scheme    = maximum composition
     set Viscosities                   = 1.e20, 1.e23, 1.e20, 1.e23, 1.e23, 1.e23, 1.e23, 1.e20
     set Densities                     = 3200.0,3000.0,3000.0,3250.0,3250.0,3200.0,3200.0,3200.0
-    set Thermal conductivities        = 183.33,2.5,2.5,2.5,2.5,2.5,2.5,2.5 
+    set Thermal conductivities        = 183.33,2.5,2.5,2.5,2.5,2.5,2.5,2.5
     set Heat capacities               = 1250.0,750.0,750.0,750.0,750.0,1250.0,1250.0,750.0
     set Thermal expansivities         = 0
   end
@@ -69,13 +69,13 @@ subsection Initial composition model
                               Cx=1358500.0, Cz=588000.0, \
                               Dx=1382900.0, Dz=588000.0, \
                               Ex=1530000.0, Ez=560000.0, \
-                              Fz=663000.0, Gz=662000.0, \   
+                              Fz=663000.0, Gz=662000.0, \
                               Hz=631000.0, Iz=630000.0
-    set Function expression = if(z>=Fz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz),1,0); \ 
+    set Function expression = if(z>=Fz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz),1,0); \
                               if(z>=Gz&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz),1,0); \
                               if(z>=Hz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz)&z<Fz,1,0); \
                               if(z>=Iz&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<Gz,1,0); \
-                              if(z>=Cz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz)&z<Hz,1,0); \ 
+                              if(z>=Cz&z>=((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz)&z<Hz,1,0); \
                               if((x>=Ex&z>=Ez&z<Iz)|(x<Ex&z<=((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<Iz&z>=((Ez-Dz)/(Ex-Dx)*(x-Dx)+Dz)),1,0); \
                               if(z>=Cz&z>((Bz-Dz)/(Bx-Dx)*(x-Dx)+Dz)&z<((Az-Cz)/(Ax-Cx)*(x-Cx)+Cz),1.5,0)
     set Variable names      = x,z
@@ -87,18 +87,18 @@ end
 # and uses the plate cooling model for the temperature in both
 # plates (the plates have different ages) and an adiabatic
 # gradient of 0.25 degrees per km in the sublithospheric
-# mantle. 
+# mantle.
 subsection Initial temperature model
-  set List of model names = QQ plate cooling 
+  set List of model names = QQ plate cooling
 end
 
 
 subsection Mesh refinement
   set Initial adaptive refinement              = 1
   set Initial global refinement                = 6
-  set Minimum refinement level                 = 6     
-  set Coarsening fraction                      = 0.06  
-  set Refinement fraction                      = 0.94  
+  set Minimum refinement level                 = 6
+  set Coarsening fraction                      = 0.06
+  set Refinement fraction                      = 0.94
 end
 
 
