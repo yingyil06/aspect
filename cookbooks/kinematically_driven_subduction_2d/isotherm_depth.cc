@@ -125,7 +125,7 @@ namespace aspect
     {
       prm.enter_subsection("Postprocess");
       {
-        prm.enter_subsection("Isotherm value");
+        prm.enter_subsection("Isotherm depth");
         {
           isotherm_value = prm.get_double("Isotherm value");
         }
