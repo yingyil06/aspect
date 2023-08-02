@@ -51,6 +51,8 @@ namespace aspect
 
       std::vector<double> local_temperature_square_integral (this->n_compositional_fields());
       std::vector<double> local_area_integral (this->n_compositional_fields());
+      double local_total_temperature_square_integral = 0.;
+      double local_total_area_integral = 0.;
 
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
@@ -60,9 +62,19 @@ namespace aspect
             fe_values[this->introspection().extractors.temperature].get_function_values(this->get_solution(),
                                                                                         temperature_values);
 
+            // Loop over the quadrature points to get the temperature and area
+            // integral for the whole domain.
+            for (unsigned int q = 0; q < n_q_points; ++q)
+              {
+                local_total_temperature_square_integral += ((temperature_values[q] * temperature_values[q]) *
+                                                            fe_values.JxW(q));
+                local_total_area_integral += fe_values.JxW(q);
+              }
+
+            // For each field, loop over the quadrature points to get the temperature
+            // and area per field.
             for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
               {
-
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                     compositional_values);
 
@@ -82,6 +94,10 @@ namespace aspect
       Utilities::MPI::sum (local_temperature_square_integral, this->get_mpi_communicator(), global_temperature_square_integral);
       std::vector<double> global_area_integral (local_area_integral.size());
       Utilities::MPI::sum (local_area_integral, this->get_mpi_communicator(), global_area_integral);
+      double global_total_temperature_square_integral = 0.;
+      Utilities::MPI::sum(local_total_temperature_square_integral, this->get_mpi_communicator(), global_total_temperature_square_integral);
+      double global_total_area_integral = 0.;
+      Utilities::MPI::sum(local_total_area_integral, this->get_mpi_communicator(), global_total_area_integral);
 
       // compute the RMS temperature for each compositional field and for the selected compositional fields combined
       std::vector<double> Trms_per_composition(local_area_integral.size());
@@ -101,6 +117,9 @@ namespace aspect
         }
 
       const double Trms_selected_fields = std::sqrt(temperature_square_integral_selected_fields) / std::sqrt(area_integral_selected_fields);
+
+      // compute the RMS temperature over the whole domain
+      const double Trms_whole_domain = std::sqrt(global_total_temperature_square_integral) / std::sqrt(global_total_area_integral);
 
       // finally produce something for the statistics file
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
@@ -128,6 +147,15 @@ namespace aspect
       statistics.set_precision(column, 8);
       statistics.set_scientific(column, true);
 
+      // Also output the RMS temperature for the whole domain
+      statistics.add_value("RMS temperature (K) for the whole domain",
+                           Trms_whole_domain);
+
+      const std::string column_whole_domain = {"RMS temperature (K) for the whole domain"};
+
+      statistics.set_precision(column_whole_domain, 8);
+      statistics.set_scientific(column_whole_domain, true);
+
       std::ostringstream output;
       output.precision(4);
 
@@ -137,9 +165,10 @@ namespace aspect
                  << " K";
           output << " // ";
         }
-      output << Trms_selected_fields;
+      output << Trms_selected_fields << " K // ";
+      output << Trms_whole_domain << " K";
 
-      return std::pair<std::string, std::string>("RMS temperature for compositions and combined selected fields:",
+      return std::pair<std::string, std::string>("RMS temperature for compositions, combined selected fields and whole domain:",
                                                  output.str());
     }
 
@@ -195,7 +224,8 @@ namespace aspect
                                   "composition RMS temperature statistics",
                                   "A postprocessor that computes the root-mean-square (RMS) temperature "
                                   "over the area spanned by each compositional field (i.e. where "
-                                  "the field values are larger or equal to 0.5. It also computes the RMS "
-                                  "temperature over the summed area of a list of fields given by the user.")
+                                  "the field values are larger or equal to 0.5). It also computes the RMS "
+                                  "temperature over the summed area of a list of fields given by the user, "
+                                  "and over the whole domain.")
   }
 }
