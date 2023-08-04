@@ -62,13 +62,19 @@ namespace aspect
             fe_values[this->introspection().extractors.temperature].get_function_values(this->get_solution(),
                                                                                         temperature_values);
 
-            local_total_temperature_square_integral += ((temperature_values[q] * temperature_values[q]) *
-                                                        fe_values.JxW(q));
-            local_total_area_integral += fe_values.JxW(q);
+            // Loop over the quadrature points to get the temperature and area
+            // integral for the whole domain.
+            for (unsigned int q = 0; q < n_q_points; ++q)
+              {
+                local_total_temperature_square_integral += ((temperature_values[q] * temperature_values[q]) *
+                                                            fe_values.JxW(q));
+                local_total_area_integral += fe_values.JxW(q);
+              }
 
+            // For each field, loop over the quadrature points to get the temperature
+            // and area per field.
             for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
               {
-
                 fe_values[this->introspection().extractors.compositional_fields[c]].get_function_values(this->get_solution(),
                     compositional_values);
 
@@ -145,10 +151,11 @@ namespace aspect
       statistics.add_value("RMS temperature (K) for the whole domain",
                            Trms_whole_domain);
 
-      const std::string column = {"RMS temperature (K) for the whole domain"};
+      const std::string column_whole_domain = {"RMS temperature (K) for the whole domain"};
 
-      statistics.set_precision(column, 8);
-      statistics.set_scientific(column, true);
+      statistics.set_precision(column_whole_domain, 8);
+      statistics.set_scientific(column_whole_domain, true);
+
 
       std::ostringstream output;
       output.precision(4);
