@@ -94,10 +94,8 @@ namespace aspect
       Utilities::MPI::sum (local_temperature_square_integral, this->get_mpi_communicator(), global_temperature_square_integral);
       std::vector<double> global_area_integral (local_area_integral.size());
       Utilities::MPI::sum (local_area_integral, this->get_mpi_communicator(), global_area_integral);
-      double global_total_temperature_square_integral = 0.;
-      Utilities::MPI::sum(local_total_temperature_square_integral, this->get_mpi_communicator(), global_total_temperature_square_integral);
-      double global_total_area_integral = 0.;
-      Utilities::MPI::sum(local_total_area_integral, this->get_mpi_communicator(), global_total_area_integral);
+      const double global_total_temperature_square_integral = Utilities::MPI::sum(local_total_temperature_square_integral, this->get_mpi_communicator());
+      const double global_total_area_integral = Utilities::MPI::sum(local_total_area_integral, this->get_mpi_communicator());
 
       // compute the RMS temperature for each compositional field and for the selected compositional fields combined
       std::vector<double> Trms_per_composition(local_area_integral.size());
