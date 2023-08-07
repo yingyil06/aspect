@@ -52,7 +52,7 @@ namespace aspect
 
       std::vector<double> compositional_values_trench(n_q_points);
       std::vector<Point<dim>> position_values(n_q_points);
-      double local_trench_location = std::numeric_limits<double>::max();
+      double local_trench_location = 0.;
 
       const types::boundary_id top_boundary_id = this->get_geometry_model().translate_symbolic_boundary_name_to_id("top");
 
@@ -68,20 +68,20 @@ namespace aspect
 
                 fe_face_values[this->introspection().extractors.compositional_fields[selected_field]].get_function_values(this->get_solution(), compositional_values_trench);
 
-                // Calculate the most left occurrence of the selected field per processor.
+                // Calculate the most right occurrence of the selected field per processor.
                 // A field is counted as present when its value is equal or higher than 0.5.
                 for (unsigned int q = 0; q < n_q_points; ++q)
                   {
-                    if (compositional_values_trench[q] >= 0.5 && position_values[q][0] < local_trench_location)
+                    if (compositional_values_trench[q] >= 0.5 && position_values[q][0] > local_trench_location)
                       {
                         local_trench_location = position_values[q][0];
                       }
                   }
               }
 
-      // compute the most left point over all processors
+      // compute the most right point over all processors
       const  double global_trench_location =
-        Utilities::MPI::min (local_trench_location, this->get_mpi_communicator());
+        Utilities::MPI::max (local_trench_location, this->get_mpi_communicator());
 
       statistics.add_value ("Trench location [m]", global_trench_location);
 
@@ -115,7 +115,7 @@ namespace aspect
           prm.declare_entry("Name of trench compositional field", "",
                             Patterns::Anything(),
                             "The name of the trench compositional field that "
-                            "you want to compute the most left position for.");
+                            "you want to compute the most right position for.");
         }
         prm.leave_subsection();
       }
@@ -147,6 +147,6 @@ namespace aspect
     ASPECT_REGISTER_POSTPROCESSOR(TrenchLocation,
                                   "trench location",
                                   "A postprocessor that computes the trench location at the domain surface, "
-                                  "i.e., the most left point of a given compositional field at the surface.")
+                                  "i.e., the most right point of a given compositional field at the surface.")
   }
 }
