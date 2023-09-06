@@ -66,7 +66,7 @@ namespace aspect
             // integral for the whole domain.
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                local_total_temperature_square_integral += ((temperature_values[q] * temperature_values[q]) *
+                local_total_temperature_square_integral += (((temperature_values[q]-273.15) * (temperature_values[q]-273.15)) *
                                                             fe_values.JxW(q));
                 local_total_area_integral += fe_values.JxW(q);
               }
@@ -82,7 +82,7 @@ namespace aspect
                   {
                     if (compositional_values[q] >= 0.5)
                       {
-                        local_temperature_square_integral[c] += ((temperature_values[q] * temperature_values[q]) *
+                        local_temperature_square_integral[c] += (((temperature_values[q]-273.15) * (temperature_values[q]-273.15)) *
                                                                  fe_values.JxW(q));
                         local_area_integral[c] += fe_values.JxW(q);
                       }
@@ -122,12 +122,12 @@ namespace aspect
       // finally produce something for the statistics file
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
-          statistics.add_value("RMS temperature (K) for composition " + this->introspection().name_for_compositional_index(c),
+          statistics.add_value("RMS temperature (C) for composition " + this->introspection().name_for_compositional_index(c),
                                Trms_per_composition[c]);
 
           // also make sure that the other columns filled by this object
           // all show up with sufficient accuracy and in scientific notation
-          const std::string columns[] = {"RMS temperature (K) for composition " + this->introspection().name_for_compositional_index(c)};
+          const std::string columns[] = {"RMS temperature (C) for composition " + this->introspection().name_for_compositional_index(c)};
 
           for (unsigned int i = 0; i < sizeof(columns) / sizeof(columns[0]); ++i)
             {
@@ -137,19 +137,19 @@ namespace aspect
         }
 
       // Also output the RMS temperature for the selected fields
-      statistics.add_value("RMS temperature (K) for the selected fields",
+      statistics.add_value("RMS temperature (C) for the selected fields",
                            Trms_selected_fields);
 
-      const std::string column = {"RMS temperature (K) for the selected fields"};
+      const std::string column = {"RMS temperature (C) for the selected fields"};
 
       statistics.set_precision(column, 8);
       statistics.set_scientific(column, true);
 
       // Also output the RMS temperature for the whole domain
-      statistics.add_value("RMS temperature (K) for the whole domain",
+      statistics.add_value("RMS temperature (C) for the whole domain",
                            Trms_whole_domain);
 
-      const std::string column_whole_domain = {"RMS temperature (K) for the whole domain"};
+      const std::string column_whole_domain = {"RMS temperature (C) for the whole domain"};
 
       statistics.set_precision(column_whole_domain, 8);
       statistics.set_scientific(column_whole_domain, true);
@@ -161,11 +161,11 @@ namespace aspect
       for (unsigned int c = 0; c < this->n_compositional_fields(); ++c)
         {
           output << Trms_per_composition[c]
-                 << " K";
+                 << " C";
           output << " // ";
         }
-      output << Trms_selected_fields << " K // ";
-      output << Trms_whole_domain << " K";
+      output << Trms_selected_fields << " C // ";
+      output << Trms_whole_domain << " C";
 
       return std::pair<std::string, std::string>("RMS temperature for compositions, combined selected fields and whole domain:",
                                                  output.str());
