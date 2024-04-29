@@ -43,10 +43,6 @@ file2 = dir . case2 . "statistics"
 
 ##### Data from other codes
 ELEFANT = dir . "Elefant/"
-#SULEC = "SULEC_Case1_diagnostics.dat"
-#ELEFANT = "Elefant_Case2a_diagnostics.dat"
-#ELEFANTstd = "Elefant_Case2a_diagnostics_slabtipdepth.dat"
-#ELEFANTt = "Elefant_Case2a_diagnostics_trench.dat"
 
 #### Linestyles
 set style line 1 dt 1 lw 1 lc rgb "blue" pt 4 ps 0.8 pn 15
