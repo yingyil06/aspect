@@ -39,6 +39,8 @@ benchmarks/onset-of-convection/doc/onset-of-convection.md
 ../cookbooks/cookbooks/van-keken/doc/van-keken.md
 ../cookbooks/cookbooks/van-keken-vof/doc/van-keken-vof.md
 ../cookbooks/cookbooks/bunge_et_al_mantle_convection/doc/bunge_et_al_mantle_convection.md
+benchmarks/blankenbach/README.md
+benchmarks/king2dcompressible/README.md
 benchmarks/rayleigh_taylor_instability/doc/rayleigh_taylor_instability.md
 benchmarks/polydiapirs/doc/polydiapirs.md
 benchmarks/sinking_block/doc/sinking_block.md
@@ -56,6 +58,7 @@ benchmarks/viscosity_grooves/doc/viscosity_grooves.md
 benchmarks/davies_et_al/doc/davies_et_al.md
 benchmarks/crameri_et_al/doc/crameri_et_al.md
 benchmarks/solitary_wave/doc/solitary_wave.md
+benchmarks/solubility/doc/solubility.md
 benchmarks/operator_splitting/doc/operator_splitting.md
 benchmarks/tosi_et_al_2015_gcubed/doc/tosi_et_al_2015_gcubed.md
 benchmarks/layeredflow/doc/layeredflow.md
@@ -77,4 +80,5 @@ benchmarks/nsinker/README.md
 benchmarks/nsinker_spherical_shell/README.md
 benchmarks/time_dependent_annulus/README.md
 benchmarks/viscoelastic_plastic_shear_bands/README.md
+benchmarks/grain_size_pinned_state/README.md
 :::

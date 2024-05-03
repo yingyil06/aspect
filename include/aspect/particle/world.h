@@ -29,6 +29,8 @@
 #include <deal.II/particles/particle_handler.h>
 #include <deal.II/particles/property_pool.h>
 
+#include <deal.II/matrix_free/fe_point_evaluation.h>
+
 #include <aspect/particle/generator/interface.h>
 #include <aspect/particle/integrator/interface.h>
 #include <aspect/particle/interpolator/interface.h>
@@ -67,8 +69,71 @@ namespace aspect
 
     namespace internal
     {
+      /**
+       * This class evaluates the solution vector at arbitrary positions inside a cell.
+       * This base class only provides the interface for SolutionEvaluatorsImplementation.
+       * See there for more details.
+       */
       template <int dim>
-      class SolutionEvaluators;
+      class SolutionEvaluators
+      {
+        public:
+          /**
+           * virtual Destructor.
+           */
+          virtual ~SolutionEvaluators() = default;
+
+          /**
+           * Reinitialize all variables to evaluate the given solution for the given cell
+           * and the given positions. The update flags control if only the solution or
+           * also the gradients should be evaluated.
+           * If other flags are set an assertion is triggered.
+           */
+          virtual void
+          reinit(const typename DoFHandler<dim>::active_cell_iterator &cell,
+                 const ArrayView<Point<dim>> &positions,
+                 const ArrayView<double> &solution_values,
+                 const UpdateFlags update_flags) = 0;
+
+          /**
+           * Fill @p solution with all solution components at the given @p evaluation_point. Note
+           * that this function only works after a successful call to reinit(),
+           * because this function only returns the results of the computation that
+           * happened in reinit().
+           */
+          virtual void get_solution(const unsigned int evaluation_point,
+                                    Vector<double> &solution) = 0;
+
+          /**
+           * Fill @p gradients with all solution gradients at the given @p evaluation_point. Note
+           * that this function only works after a successful call to reinit(),
+           * because this function only returns the results of the computation that
+           * happened in reinit().
+           */
+          virtual void get_gradients(const unsigned int evaluation_point,
+                                     std::vector<Tensor<1, dim>> &gradients) = 0;
+
+          /**
+           * Return the evaluator for velocity or fluid velocity. This is the only
+           * information necessary for advecting particles.
+           */
+          virtual FEPointEvaluation<dim, dim> &
+          get_velocity_or_fluid_velocity_evaluator(const bool use_fluid_velocity) = 0;
+
+          /**
+           * Return the cached mapping information.
+           */
+          virtual NonMatching::MappingInfo<dim> &
+          get_mapping_info() = 0;
+      };
+
+      /**
+       * A function to create a pointer to a SolutionEvaluators object.
+       */
+      template <int dim>
+      std::unique_ptr<internal::SolutionEvaluators<dim>>
+      construct_solution_evaluators(const SimulatorAccess<dim> &simulator_access,
+                                    const UpdateFlags update_flags);
     }
 
     /**
@@ -230,9 +295,15 @@ namespace aspect
          * before a refinement step. A weight is attached to every cell
          * depending on the number of contained particles.
          */
+#if DEAL_II_VERSION_GTE(9,6,0)
+        unsigned int
+        cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
+                    const CellStatus status);
+#else
         unsigned int
         cell_weight(const typename parallel::distributed::Triangulation<dim>::cell_iterator &cell,
                     const typename parallel::distributed::Triangulation<dim>::CellStatus status);
+#endif
 
         /**
          * Update the particle properties if necessary.
@@ -302,13 +373,6 @@ namespace aspect
         std::unique_ptr<Interpolator::Interface<dim>> interpolator;
 
         /**
-         * The property manager stores information about the additional
-         * particle properties and handles the initialization and update of
-         * these properties.
-         */
-        std::unique_ptr<Property::Manager<dim>> property_manager;
-
-        /**
          * Particle handler object that is responsible for storing and
          * managing the internal particle structures.
          */
@@ -321,6 +385,13 @@ namespace aspect
          * each outer advection iteration.
          */
         Particles::ParticleHandler<dim> particle_handler_backup;
+
+        /**
+         * The property manager stores information about the additional
+         * particle properties and handles the initialization and update of
+         * these properties.
+         */
+        std::unique_ptr<Property::Manager<dim>> property_manager;
 
         /**
          * Strategy for particle load balancing.

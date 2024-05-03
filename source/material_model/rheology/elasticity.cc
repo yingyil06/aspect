@@ -69,10 +69,11 @@ namespace aspect
       Elasticity<dim>::declare_parameters (ParameterHandler &prm)
       {
         prm.declare_entry ("Elastic shear moduli", "75.0e9",
-                           Patterns::List(Patterns::Double (0.)),
+                           Patterns::List(Patterns::Double(0.)),
                            "List of elastic shear moduli, $G$, "
                            "for background material and compositional fields, "
-                           "for a total of N+1 values, where N is the number of compositional fields. "
+                           "for a total of N+1 values, where N is the number of all compositional fields or only "
+                           "those corresponding to chemical compositions. "
                            "The default value of 75 GPa is representative of mantle rocks. Units: Pa.");
         prm.declare_entry ("Use fixed elastic time step", "unspecified",
                            Patterns::Selection("true|false|unspecified"),
@@ -114,15 +115,21 @@ namespace aspect
       Elasticity<dim>::parse_parameters (ParameterHandler &prm)
       {
         // Retrieve the list of composition names
-        const std::vector<std::string> list_of_composition_names = this->introspection().get_composition_names();
+        std::vector<std::string> compositional_field_names = this->introspection().get_composition_names();
+
+        // Retrieve the list of names of fields that represent chemical compositions, and not, e.g.,
+        // plastic strain
+        std::vector<std::string> chemical_field_names = this->introspection().chemical_composition_field_names();
 
         // Establish that a background field is required here
-        const bool has_background_field = true;
+        compositional_field_names.insert(compositional_field_names.begin(), "background");
+        chemical_field_names.insert(chemical_field_names.begin(),"background");
 
-        elastic_shear_moduli = Utilities::parse_map_to_double_array (prm.get("Elastic shear moduli"),
-                                                                     list_of_composition_names,
-                                                                     has_background_field,
-                                                                     "Elastic shear moduli");
+        Utilities::MapParsing::Options options(chemical_field_names, "Elastic shear moduli");
+        options.list_of_allowed_keys = compositional_field_names;
+
+        elastic_shear_moduli = Utilities::MapParsing::parse_map_to_double_array (prm.get("Elastic shear moduli"),
+                                                                                 options);
 
         // Stabilize elasticity through a viscous damper
         elastic_damper_viscosity = prm.get_double("Elastic damper viscosity");
@@ -286,10 +293,10 @@ namespace aspect
 
             // Only create the evaluator the first time we get here
             if (!evaluator)
-              evaluator.reset(new FEPointEvaluation<dim,dim>(this->get_mapping(),
-                                                             this->get_fe(),
-                                                             update_gradients,
-                                                             this->introspection().component_indices.velocities[0]));
+              evaluator = std::make_unique<FEPointEvaluation<dim,dim>>(this->get_mapping(),
+                                                                        this->get_fe(),
+                                                                        update_gradients,
+                                                                        this->introspection().component_indices.velocities[0]);
 
             // Initialize the evaluator for the old velocity gradients
             evaluator->reinit(in.current_cell, quadrature_positions);
@@ -408,16 +415,19 @@ namespace aspect
       double
       Elasticity<dim>::
       calculate_viscoelastic_strain_rate(const SymmetricTensor<2,dim> &strain_rate,
-                                         const SymmetricTensor<2,dim> &stress,
+                                         const SymmetricTensor<2,dim> &stored_stress,
                                          const double shear_modulus) const
       {
-        // The second term in the following expression corresponds to the
-        // elastic part of the strain rate deviator. Note the parallels with the
-        // viscous part of the strain rate deviator,
+        // The first term in the following expression is the deviator of the true strain rate
+        // of one or more isostress rheological elements (in series).
+        // One of these elements must be an elastic component (potentially damped).
+        // The second term corresponds to a fictional strain rate arising from
+        // elastic stresses stored from the last time step.
+        // Note the parallels with the viscous part of the strain rate deviator,
         // which is equal to 0.5 * stress / viscosity.
-        const SymmetricTensor<2,dim> edot_deviator = deviator(strain_rate) + 0.5*stress /
+        const SymmetricTensor<2,dim> edot_deviator = deviator(strain_rate) + 0.5*stored_stress /
                                                      calculate_elastic_viscosity(shear_modulus);
-
+        // Return the norm of the strain rate, or 0, whichever is larger.
         return std::sqrt(std::max(-second_invariant(edot_deviator), 0.));
       }
     }

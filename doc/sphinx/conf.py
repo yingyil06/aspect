@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'ASPECT'
-copyright = '2022'
+copyright = '2023'
 author = 'Wolfgang Bangerth, Juliane Dannberg, Menno Fraters, Rene Gassmöller, Anne Glerum, Timo Heister, Bob Myhill, John Naliboff; with contributions by: Jacqueline Austermann, Magali Billen, Markus B&uuml;rg, Thomas Clevenger, Samuel Cox, William Durkin, Grant Euen, Thomas Geenen, Ryan Grove, Eric Heien, Ludovic Jeanniot, Louise Kellogg, Scott King, Martin Kronbichler, Marine Lasbleis, Haoyuan Li, Shangxin Liu, Hannah Mark, Elvira Mulyukova, Bart Niday, Jonathan Perry-Houts, Elbridge Gerry Puckett, Tahiry Rajaonarison, Fred Richards, Jonathan Robey, Ian Rose, Max Rudolph, Stephanie Sparks, D. Sarah Stamps, Cedric Thieulot, Wanying Wang, Iris van Zelst, Siqi Zhang'
 
 # The full version, including alpha/beta/rc tags
@@ -82,10 +82,10 @@ html_theme_options = {
     "use_edit_page_button": True,
     "use_issues_button": True,
     "home_page_in_toc": True,
-}
-
-html_sidebars = {
-    "**": ["navbar-logo.html","search-field.html","sbt-sidebar-nav.html","navbar_end.html"]
+    "logo": {
+        "text": "ASPECT " + release,
+    },
+    "primary_sidebar_end": "navbar_end.html"
 }
 
 bibtex_bibfiles = ["references.bib"]

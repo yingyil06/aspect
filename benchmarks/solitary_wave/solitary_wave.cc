@@ -159,7 +159,7 @@ namespace aspect
        * @param filename Name of the input file.
        */
       void read_solitary_wave_solution (const std::string &filename,
-                                        MPI_Comm comm)
+                                        const MPI_Comm comm)
       {
         std::string temp;
         std::stringstream in(Utilities::read_and_distribute_file_content(filename, comm));
@@ -195,7 +195,7 @@ namespace aspect
                              const double compaction_length,
                              const bool read_solution,
                              const std::string file_name,
-                             MPI_Comm comm)
+                             const MPI_Comm comm)
       {
         // non-dimensionalize the amplitude
         const double non_dim_amplitude = amplitude / background_porosity;
@@ -281,8 +281,8 @@ namespace aspect
             delta_ = delta;
           }
 
-          virtual void vector_value (const Point<dim> &p,
-                                     Vector<double>   &values) const
+          void vector_value (const Point<dim> &p,
+                             Vector<double>   &values) const override
           {
             unsigned int index = static_cast<int>((p[dim-1]-delta_)/max_z_ * (initial_pressure_.size()-1));
             if (p[dim-1]-delta_ < 0)
@@ -666,9 +666,8 @@ namespace aspect
         /**
          * Generate graphical output from the current solution.
          */
-        virtual
         std::pair<std::string,std::string>
-        execute (TableHandler &statistics);
+        execute (TableHandler &statistics) override;
 
         /**
          * Initialization function. Take references to the material model and
@@ -676,7 +675,7 @@ namespace aspect
          * the analytical solution for the shape of the solitary wave and store them.
          */
         void
-        initialize ();
+        initialize () override;
 
         void
         store_initial_pressure ();
@@ -948,8 +947,8 @@ namespace aspect
       if (this->get_timestep_number()==0)
         {
           store_initial_pressure();
-          ref_func.reset (new AnalyticSolutions::FunctionSolitaryWave<dim>(offset,0.0,initial_pressure,
-                                                                           this->get_geometry_model().maximal_depth(), this->introspection().n_components));
+          ref_func = std::make_unique<AnalyticSolutions::FunctionSolitaryWave<dim>>(offset,0.0,initial_pressure,
+                                                                                     this->get_geometry_model().maximal_depth(), this->introspection().n_components);
         }
 
       double delta=0;

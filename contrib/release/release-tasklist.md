@@ -23,10 +23,10 @@ and the links are working
 - setup:
 
   ```
-  export OLDVER=2.0.0
-  export VER=2.1.0
-  export VERSHORT=2.1
-  export NEXTVER=2.2.0-pre
+  export OLDVER=2.4.0
+  export VER=2.5.0
+  export VERSHORT=2.5
+  export NEXTVER=2.6.0-pre
   # Make sure DEALSRCDIR is set to correct path
   export DEALSRCDIR=$DEAL_II_DIR
   ```
@@ -153,7 +153,7 @@ and the links are working
   sha1sum aspect-$TAG.tar.gz aspect-manual-$TAG.pdf >sha1sum-$TAG.txt
   ```
 
-- create a release on github, upload .tar.gz and manual-$VER.pdf
+- create a release on github, upload .tar.gz
 - update website (www branch):
   - header.include: add link to changes
   - index.html: add news entry
@@ -163,34 +163,34 @@ and the links are working
   - title: ASPECT v2.0.0
   - license: GPL 2
   - check CIG comments: https://github.com/geodynamics/best_practices/blob/master/ZenodoBestPractices.md
-  - cig community!
-  - update zenodo badge in README.md to newest version (see badge button on the right of zenodo page)
-  - add zenodo badge also to the release on github (on top, see 2.0.1 for an example)
-  - readme / release notes: add zenodo DOI button
-  - manual/manual.bib: add new zenodo entry
-. create figshare DOI for manual (just upload a new version as the same entry)
-  - update manual/manual.bib entry
-. update doc/manual/manual.bib with src and manual doi
-. update aspect.geodynamics.org/cite.html and citing.html in www repo:
+  - add to "Computational Infrastructure for Geodynamics" community
+  - update Zenodo button on main readme (see badge button on the right of zenodo page)
+  - doc/sphinx/references.bib: add new zenodo entry
+- add to github release:
+    - Zenodo button
+    - [![pdf manual](https://img.shields.io/badge/get-PDF-green.svg)](https://doi.org/10.6084/m9.figshare.4865333)
+    - [![online manual](https://img.shields.io/badge/online-manual-red)](https://aspect-documentation.readthedocs.io/en/v2.5.0/)
+- create figshare DOI for manual (just upload a new version as the same entry)
+  - update doc/sphinx/references.bib entry
+- update doc/sphinx/references.bib with src and manual doi
+- update aspect.geodynamics.org/cite.html and citing.html in www repo:
   - add new version in citing.html, search for "<option"
   - doc/make_cite_html.py:
     - add new version, update doc/zenodo dois
   - run aspect/doc/ python3 make_cite_html.py add to www
-. update http://geodynamics.org/cig/software/aspect/:
-      update current release number
-      create entry for the new release
-      update the list of contributors
-      ...
-. update docker image geodynamics/aspect:
-  - modify contrib/docker/docker/Dockerfile and contrib/docker/docker/build.sh to checkout the release
-    cd contrib/docker/docker && ./build.sh
-    docker push geodynamics/aspect:v$TAG
-. update the spack installation package with the latest tarball, 
-  see https://github.com/spack/spack/pull/13830 for an example
-. announce on
-      cig-all@geodynamics.org
-      https://community.geodynamics.org/c/aspect
-      dealii@googlegroups.com
+- update http://geodynamics.org/cig/software/aspect/:
+  - update current release number
+  - create entry for the new release
+  - update the list of contributors
+
+- update the spack installation package with the latest tarball,
+  see https://github.com/spack/spack/pull/13830 for an example:
+      spack checksum aspect
+
+- announce on
+  - cig-all@geodynamics.org
+  - https://community.geodynamics.org/c/aspect
+  - dealii@googlegroups.com
 
 ## List of prior release notes
 

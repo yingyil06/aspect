@@ -262,7 +262,7 @@ namespace aspect
       std::list<std::string>
       Interface<dim>::required_other_postprocessors () const
       {
-        return std::list<std::string>();
+        return {};
       }
 
 
@@ -377,8 +377,8 @@ namespace aspect
                                                this->get_time());
       const std::string pvtu_master_filename = (solution_file_prefix +
                                                 ".pvtu");
-      std::ofstream pvtu_master ((this->get_output_directory() + "solution/" +
-                                  pvtu_master_filename).c_str());
+      std::ofstream pvtu_master (this->get_output_directory() + "solution/" +
+                                 pvtu_master_filename);
       data_out.write_pvtu_record (pvtu_master, filenames);
 
       // now also generate a .pvd file that matches simulation
@@ -398,7 +398,7 @@ namespace aspect
 
       const std::string pvd_master_filename = (this->get_output_directory() +
                                                (is_cell_data_output ? "solution.pvd" : "solution_surface.pvd"));
-      std::ofstream pvd_master (pvd_master_filename.c_str());
+      std::ofstream pvd_master (pvd_master_filename);
 
       DataOutBase::write_pvd_record (pvd_master, output_history.times_and_pvtu_names);
 
@@ -408,7 +408,7 @@ namespace aspect
                                                  + "solution/"
                                                  + solution_file_prefix
                                                  + ".visit");
-      std::ofstream visit_master (visit_master_filename.c_str());
+      std::ofstream visit_master (visit_master_filename);
 
       DataOutBase::write_visit_record (visit_master, filenames);
 
@@ -435,8 +435,8 @@ namespace aspect
           output_history.output_file_names_by_timestep.push_back (filenames_with_path);
       }
 
-      std::ofstream global_visit_master ((this->get_output_directory() +
-                                          (is_cell_data_output ? "solution.visit" : "solution_surface.visit")).c_str());
+      std::ofstream global_visit_master (this->get_output_directory() +
+                                         (is_cell_data_output ? "solution.visit" : "solution_surface.visit"));
 
       std::vector<std::pair<double, std::vector<std::string>>> times_and_output_file_names;
       for (unsigned int timestep=0; timestep<output_history.times_and_pvtu_names.size(); ++timestep)
@@ -593,7 +593,7 @@ namespace aspect
             // Just write one data file in parallel
             if (group_files == 1)
               {
-                data_out.write_vtu_in_parallel(filename.c_str(),
+                data_out.write_vtu_in_parallel(filename,
                                                this->get_mpi_communicator());
               }
             else               // Write as many output files as 'group_files' groups
@@ -602,7 +602,7 @@ namespace aspect
                 MPI_Comm comm;
                 int ierr = MPI_Comm_split(this->get_mpi_communicator(), color, my_id, &comm);
                 AssertThrowMPI(ierr);
-                data_out.write_vtu_in_parallel(filename.c_str(), comm);
+                data_out.write_vtu_in_parallel(filename, comm);
                 ierr = MPI_Comm_free(&comm);
                 AssertThrowMPI(ierr);
               }
@@ -631,7 +631,7 @@ namespace aspect
                                        + solution_file_prefix + "." + Utilities::int_to_string(myid, 4)
                                        + DataOutBase::default_suffix(
                                          DataOutBase::parse_output_format(output_format));
-          std::ofstream out(filename.c_str());
+          std::ofstream out(filename);
           AssertThrow(out,
                       ExcMessage(
                         "Unable to open file for writing: " + filename + "."));
@@ -754,7 +754,7 @@ namespace aspect
       if ((this->get_time() < last_output_time + output_interval)
           && (this->get_timestep_number() < last_output_timestep + maximum_timesteps_between_outputs)
           && (this->get_timestep_number() != 0))
-        return std::pair<std::string,std::string>();
+        return {"", ""};
 
       // up the counter of the number of the file by one, but not in
       // the very first output step. if we run postprocessors on all
@@ -871,7 +871,7 @@ namespace aspect
                          (& *p))
                 {
                   // get the data produced here
-                  const std::pair<std::string, Vector<float> *>
+                  std::pair<std::string, std::unique_ptr<Vector<float>>>
                   cell_data = cell_data_creator->execute();
                   Assert (cell_data.second->size() ==
                           this->get_triangulation().n_active_cells(),
@@ -884,16 +884,15 @@ namespace aspect
                                                      visualization_field_names_and_units);
 
                   // store the pointer, then attach the vector to the DataOut object
-                  cell_data_vectors.push_back (std::unique_ptr<Vector<float>>
-                                               (cell_data.second));
+                  cell_data_vectors.push_back (std::move(cell_data.second));
 
                   if (dynamic_cast<const VisualizationPostprocessors::SurfaceOnlyVisualization<dim>*>
                       (& *p) == nullptr)
-                    data_out.add_data_vector (*cell_data.second,
+                    data_out.add_data_vector (*cell_data_vectors.back(),
                                               cell_data.first,
                                               DataOut<dim>::type_cell_data);
                   else
-                    data_out_faces.add_data_vector (*cell_data.second,
+                    data_out_faces.add_data_vector (*cell_data_vectors.back(),
                                                     cell_data.first,
                                                     DataOutFaces<dim>::type_cell_data);
                 }
@@ -1064,11 +1063,11 @@ namespace aspect
             close(tmp_file_desc);
         }
 
-      std::ofstream out(tmp_filename.c_str());
+      std::ofstream out(tmp_filename);
 
       AssertThrow (out, ExcMessage(std::string("Trying to write to file <") +
                                    filename +
-                                   ">, but the file can't be opened!"))
+                                   ">, but the file can't be opened!"));
 
       // now write and then move the tmp file to its final destination
       // if necessary
@@ -1175,7 +1174,7 @@ namespace aspect
                              "\n\n"
                              "The effect of using this option can be seen in the following "
                              "picture showing a variation of the output produced with the "
-                             "input files from Section~\\ref{sec:shell-simple-2d}:"
+                             "input files from Section~\\ref{sec:cookbooks:shell_simple_2d}:"
                              "\n\n"
                              "\\begin{center}"
                              "  \\includegraphics[width=0.5\\textwidth]{viz/parameters/build-patches}"
@@ -1230,7 +1229,8 @@ namespace aspect
                              "output properties. Activating this function reduces the disk space "
                              "by about a factor of $2^{dim}$ for HDF5 output, and currently has no "
                              "effect on other output formats. "
-                             "\\note{\\textbf{Warning:} Setting this flag to true will result in "
+                             ":::{warning}\n"
+                             "Setting this flag to true will result in "
                              "visualization output that does not accurately represent discontinuous "
                              "fields. This may be because you are using a discontinuous finite "
                              "element for the pressure, temperature, or compositional variables, "
@@ -1238,7 +1238,8 @@ namespace aspect
                              "quantities as discontinuous fields (e.g., the strain rate, viscosity, "
                              "etc.). These will then all be visualized as \\textit{continuous} "
                              "quantities even though, internally, \\aspect{} considers them as "
-                             "discontinuous fields.}");
+                             "discontinuous fields.\n"
+                             ":::");
 
           prm.declare_entry ("Output mesh velocity", "false",
                              Patterns::Bool(),

@@ -84,8 +84,6 @@ namespace aspect
                       {
                         local_temperature_square_integral[c] += (((temperature_values[q]-kelvin_to_celsius) * 
                                                                   (temperature_values[q]-kelvin_to_celsius)) * fe_values.JxW(q));
-                        local_area_integral[c] += fe_values.JxW(q);
-                      }
                   }
               }
           }

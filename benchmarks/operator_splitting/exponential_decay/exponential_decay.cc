@@ -177,8 +177,8 @@ namespace aspect
           // class; it will get a chance to read its parameters below after we
           // leave the current section
           base_model = create_material_model<dim>(prm.get("Base model"));
-          if (Plugins::plugin_type_matches<SimulatorAccess<dim>>(*base_model))
-            Plugins::get_plugin_as_type<SimulatorAccess<dim>>(*base_model).initialize_simulator (this->get_simulator());
+          if (auto s = dynamic_cast<SimulatorAccess<dim>*>(base_model.get()))
+            s->initialize_simulator (this->get_simulator());
 
           half_life              = prm.get_double ("Half life");
         }
@@ -279,8 +279,8 @@ namespace aspect
   {
     public:
       RefFunction () : Function<dim>(dim+3) {}
-      virtual void vector_value (const Point<dim> &/*position*/,
-                                 Vector<double>   &values) const
+      void vector_value (const Point<dim> &/*position*/,
+                         Vector<double>   &values) const override
       {
         values[0] = 0.0; // velocity x
         values[1] = 0.0; // velocity z
@@ -305,9 +305,8 @@ namespace aspect
       /**
        * Generate graphical output from the current solution.
        */
-      virtual
       std::pair<std::string,std::string>
-      execute (TableHandler &statistics);
+      execute (TableHandler &statistics) override;
 
       double max_error;
       double max_error_T;

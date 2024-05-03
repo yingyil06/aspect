@@ -12,7 +12,6 @@
 # High resolution is required to a.o. resolve the weak zone
 # between the subducting and overriding plate, so about
 # 100 MPI processes are required.
-
 # We included a shared library for using the initial temperature plugin and the isotherm depth, composition RMS temperature, trench location postprocessors.
 set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/kinematically_driven_subduction_2d/libsubduction_plate_cooling.so
 
@@ -112,4 +111,5 @@ subsection Postprocess
   end
 
 end
+
 
