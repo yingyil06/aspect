@@ -53,7 +53,7 @@ namespace aspect
       std::vector<double> local_area_integral (this->n_compositional_fields());
       double local_total_temperature_square_integral = 0.;
       double local_total_area_integral = 0.;
-      const double kelvin_to_celsius = 273.15
+      double kelvin_to_celsius = 273.15;
       for (const auto &cell : this->get_dof_handler().active_cell_iterators())
         if (cell->is_locally_owned())
           {
@@ -66,7 +66,7 @@ namespace aspect
             // integral for the whole domain.
             for (unsigned int q = 0; q < n_q_points; ++q)
               {
-                local_total_temperature_square_integral += (((temperature_values[q]-kelvin_to_celsius) * 
+                local_total_temperature_square_integral += (((temperature_values[q]-kelvin_to_celsius) *
                                                              (temperature_values[q]-kelvin_to_celsius)) * fe_values.JxW(q));
                 local_total_area_integral += fe_values.JxW(q);
               }
@@ -82,8 +82,10 @@ namespace aspect
                   {
                     if (compositional_values[q] >= 0.5)
                       {
-                        local_temperature_square_integral[c] += (((temperature_values[q]-kelvin_to_celsius) * 
+                        local_temperature_square_integral[c] += (((temperature_values[q]-kelvin_to_celsius) *
                                                                   (temperature_values[q]-kelvin_to_celsius)) * fe_values.JxW(q));
+                        local_area_integral[c] += fe_values.JxW(q);
+                      }
                   }
               }
           }
