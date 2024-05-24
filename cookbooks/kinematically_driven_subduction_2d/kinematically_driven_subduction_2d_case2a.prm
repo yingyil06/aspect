@@ -12,10 +12,10 @@
 # High resolution is required to a.o. resolve the weak zone
 # between the subducting and overriding plate, so about
 # 100 MPI processes are required.
-# We included a shared library for using the initial temperature plugin and the isotherm depth, composition RMS temperature, trench location postprocessors.
+# We include a shared library for the initial temperature plugin and the isotherm depth, composition RMS temperature, and trench location postprocessors.
 set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/kinematically_driven_subduction_2d/libsubduction_plate_cooling.so
 
-# 2D 
+# 2D
 set Dimension                              = 2
 
 # Reuse parts of case 1
@@ -38,10 +38,8 @@ subsection Material model
 
   subsection Multicomponent
     set Reference temperature         = 473.15
-    set Viscosity averaging scheme    = maximum composition 
-    set Viscosities                   = 1.e20, 1.e23, 1.e20, 1.e23, 1.e23, 1.e23, 1.e23, 1.e20
-    set Densities                     = 3200.0,3250.0,3250.0,3250.0,3250.0,3250.0,3250.0,3250.0
-    set Thermal conductivities        = 183.33,2.5,2.5,2.5,2.5,2.5,2.5,2.5 
+    # BOC_OP, BOC_SP, SHB_OP, SHB_SP, thermal_OP, thermal_SP, WZ
+    set Thermal conductivities        = 183.33,2.5,2.5,2.5,2.5,2.5,2.5,2.5
     set Heat capacities               = 1250.0,750.0,750.0,750.0,750.0,1250.0,1250.0,750.0
     set Thermal expansivities         = 0
   end

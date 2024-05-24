@@ -152,7 +152,6 @@ namespace aspect
       statistics.set_precision(column_whole_domain, 8);
       statistics.set_scientific(column_whole_domain, true);
 
-
       std::ostringstream output;
       output.precision(4);
 

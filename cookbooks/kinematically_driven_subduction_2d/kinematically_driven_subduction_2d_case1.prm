@@ -8,7 +8,7 @@
 # between the subducting and overriding plate, so about
 # 100 MPI processes are required.
 
-# We included a shared library for using the trench location postprocessor.
+# We include a shared library for the trench location postprocessor.
 set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/kinematically_driven_subduction_2d/libsubduction_plate_cooling.so
 
 # 2D

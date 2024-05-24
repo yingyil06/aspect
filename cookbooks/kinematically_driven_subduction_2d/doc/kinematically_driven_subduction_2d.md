@@ -122,7 +122,7 @@ The initial temperature distribution can be seen in  {numref}`fig:QQ_case2a_temp
 ```
 
 The thermal expansivity is kept zero in Case 2a. Therefore the thermal evolution is 
-not coupled to the mechanical evolution. A high conductivity (k = 183.33 Wm-1K-1) 
+not coupled to the mechanical evolution. A high conductivity (k = 183.33 Wm<sup>-1</sup>K<sup>-1</sup>) 
 is defined for the upper mantle to enforce the mantle adiabat in the slow convection
 system.
 
@@ -133,7 +133,7 @@ system.
 We can monitor the temperature evolution, however, by tracking the
 root-mean-square (RMS) temperature and the isotherm depth using 
 two plugins called "composition_trms_statistics" and "isotherm depth".
-To this end, we add the postprocessors ’temperature statistics’ 
+To this end, we add the postprocessors "composition RMS temperature statistics" 
 and "isotherm depth" to the prm file. The RMS temperature is tracked 
 over the subducting plate (comprising BOC_SP, SHB_SP, thermal_SP) 
 and the whole domain over time. And the isotherm temperature to be 
@@ -145,11 +145,11 @@ tracked is prescribed as 800 C.
 
 {numref}`fig:QQ_case2a_diagnostics` shows the RMS temperature, 
 800 C isotherm depth as well as the other diagnostics. The 800 C isotherm 
-keeps going deeper, while in the end the descend speed becomes slower. 
+depth continuously increases over time, but towards the end at a slower rate.
 The RMS temperature of the whole domain keeps decreasing due to the 
 input of cold subducting plate into model domain. The slab RMS temperature 
-cools at the initial stage, then it goes up due to being warmed up by the 
-mantle. Notice that these other diagnostics are indeed the same as for Case 1.
+decreases at the initial stage, then it goes up due to the slab being warmed up by the 
+mantle. Notice that the other diagnostics are indeed the same as for Case 1.
 
 ```{figure-md} fig:QQ_case2a_diagnostics
 <img src="Case2a_diagnostics.*" />
@@ -159,11 +159,11 @@ mantle. Notice that these other diagnostics are indeed the same as for Case 1.
 
 ## Case 2b: Model with a temperature-dependent density
 
-Case2b builds on case 2a.  Compared to Case2a, the thermal expansivity in Case 2b
-is set to 2.5e-5 K<sup>-1</sup> instead of 0. Therefore, temperature feeds into density 
-and therefore stokes equations. In addition, the benchmark uses different reference temperatures for each composition, but only one value of reference temperature is 
-allowed to be given to various compositional fields in ASPECT. Therefore, we adapted reference densities for different compositional fields. All the other parameters are 
-identical with case2a:
+Case 2b builds on case 2a.  Compared to Case2a, the thermal expansivity in Case 2b
+is set to 2.5e-5 K<sup>-1</sup> instead of 0. Therefore, temperature feeds into the density 
+and therefore into the stokes equations. In addition, the benchmark uses different reference temperatures for each composition, but only one value can be specified for the reference temperature
+in ASPECT. Therefore, we adapted the reference densities for the different compositional fields to reflect the different reference temperatures. All the other parameters are 
+identical to case2a:
 
 ```{literalinclude} kinematically_driven_subduction_2d_case2b.prm
 
@@ -174,8 +174,8 @@ The density evolution can be seen in {numref}`fig:QQ_case2b_density_evolution`. 
 <img src="Case2b_density_evolution.*" />
  Case2b density evolution
 ```
-Therefore, the  subduction in this case is much slower than that in case1 and 2b (see {numref}`fig:QQ_case2b_diagnostics`). The subducting plate did not reach 
-the bottom till 15 Myr, i.e., the third stage in case 1 and 2b is missing in this 
+Therefore, the  subduction in this case is much slower than that in case1 and 2b (see {numref}`fig:QQ_case2b_diagnostics`). The subducting plate does not reach 
+the bottom in 15 Myr, i.e., the third stage of case 1 and 2b is missing in this 
 case. 
 
 ```{figure-md} fig:QQ_case2b_diagnostics
@@ -184,8 +184,8 @@ case.
  ASPECT Case2b diagnostic quantities
 ```
 
-The root mean square velocity over the whole domain increases (see {numref}`fig:QQ_case2b_diagnostics`) .This is due to higher velocities in the 
-mantle in the left side of the mantle where a second convection cell forms (see {numref}`fig:QQ_case2b_velocity_evolution`) 
+The root mean square velocity over the whole domain is overall higher than the previous cases(see {numref}`fig:QQ_case2b_diagnostics`).This is due to higher velocities in the 
+left side of the domain where a second convection cell forms (see {numref}`fig:QQ_case2b_velocity_evolution`) 
 
 ```{figure-md} fig:QQ_case2b_velocity_evolution
 <img src="Case2b_velocity_evolution.*" />

@@ -35,7 +35,7 @@ CMARGIN = "set lmargin at screen 0.45; set rmargin at screen 0.65"
 RMARGIN = "set lmargin at screen 0.78; set rmargin at screen 0.98"
 
 #### The path to the directory
-dir = "/scratch/usr/bbkyingy/subduction/"
+dir = "$ASPECT_SOURCE_DIR/cookbooks/kinematically_driven_subduction_2d/"
 case = "output-Case2b/"
 file = dir . case . "statistics"
 

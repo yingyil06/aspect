@@ -35,7 +35,7 @@ CMARGIN = "set lmargin at screen 0.45; set rmargin at screen 0.65"
 RMARGIN = "set lmargin at screen 0.78; set rmargin at screen 0.98"
 
 #### The path to the directory
-dir = "/scratch/usr/bbkyingy/subduction_Trms_fixed/"
+dir = "$ASPECT_SOURCE_DIR/cookbooks/kinematically_driven_subduction_2d/"
 case1 = "output-Case1/"
 case2 = "output-Case2a/"
 file1 = dir . case1 . "statistics"
@@ -102,7 +102,6 @@ plot file1 u ($2/1e6):($44/1e3) w lp ls 1 t 'ASPECT-case1', \
      ELEFANT . "Elefant_Case2a_diagnostics_viscdiss.dat" u ($2/1e6):($4/1000) w l ls 3 t 'Elefant-case2a'
  
 ###### Total Trms ####
-##### TODO: add ASPECT RMS temperature
 @MMARGIN
 @RMARGIN
 set yrange [1286:1310]
