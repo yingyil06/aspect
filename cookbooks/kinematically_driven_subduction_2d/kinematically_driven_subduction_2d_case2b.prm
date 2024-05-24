@@ -7,7 +7,7 @@
 # Building on case 2a, an initial temperature field
 # based on the plate cooling model and
 # a mantle adiabatic gradient of 0.25 degrees/km
-# is prescribed. Compared to case2a, this model includes 
+# is prescribed. Compared to case2a, this model includes
 # a temperature dependent density.
 # High resolution is required to a.o. resolve the weak zone
 # between the subducting and overriding plate, so about
@@ -25,19 +25,18 @@ subsection Material model
   subsection Multicomponent
     # The benchmark uses different reference temperatures for each composition.
     # Here we have instead adapted the reference density.
-    # set Reference temperature       = 1573.15,473.15,473.15,473.15,473.15,1573.15,1573.15,473.15 
+    # set Reference temperature       = 1573.15,473.15,473.15,473.15,473.15,1573.15,1573.15,473.15
     set Reference temperature         = 473.15
-    set Viscosity averaging scheme    = maximum composition 
+    set Viscosity averaging scheme    = maximum composition
     set Viscosities                   = 1.e20, 1.e23, 1.e20, 1.e23, 1.e23, 1.e23, 1.e23, 1.e20
-    # We change the reference densities for mantle and mantle lithosphere in order to achieve similar 
+    # We change the reference densities for mantle and mantle lithosphere in order to achieve similar
     # densities when the reference temperature is set to 473.15K instead of 1573.15K.
     set Densities                     = 3290.66,3000.0,3000.0,3250.0,3250.0,3290.66,3290.66,3200.0
-    set Thermal conductivities        = 183.33,2.5,2.5,2.5,2.5,2.5,2.5,2.5 
+    set Thermal conductivities        = 183.33,2.5,2.5,2.5,2.5,2.5,2.5,2.5
     set Heat capacities               = 1250.0,750.0,750.0,750.0,750.0,1250.0,1250.0,750.0
-    # Compared to Case 2a, now thermal expansivity is no longer zero and therefore temperature 
+    # Compared to Case 2a, now thermal expansivity is no longer zero and therefore temperature
     # feeds into the density and therefore the Stokes equations
     set Thermal expansivities         = 2.5e-5
   end
 
 end
-

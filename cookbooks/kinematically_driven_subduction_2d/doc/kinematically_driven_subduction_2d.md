@@ -3,10 +3,10 @@
 *This section was contributed by Anne Glerum and Yingying Li.*
 
 This subduction example is based on the benchmark effort of Quinquis et al.,
-of which initial results were published in {cite:t}`quinquis:2014`. In four 
+of which initial results were published in {cite:t}`quinquis:2014`. In four
 increasingly complex cases we will go from isoviscous materials without any
 temperature effects to a fully thermo-mechanical, nonlinear, strain-weakened
-visco-plastic, externally-driven model of oceanic subduction. The setup is 
+visco-plastic, externally-driven model of oceanic subduction. The setup is
 outlined in {numref}`fig:QQ_setup`. The models are run for 15 My
 and slab tip depth, trench location, RMS velocity and temperature, and viscous
 dissipation are monitored. In addition, we discuss the effects of the element
@@ -22,8 +22,8 @@ the solver tolerance.
 ## Case 1: Simple rheology
 
 The Case 1 model setup considers seven materials (compositional fields) apart
-from the background sublithospheric mantle (see {numref}`fig:QQ_case1_setup`), including (1) the Bulk Oceanic Composition (BOC), (2) Serpentinized HarzBurgite 
-(SHB) and (3)"thermal" layer of the overiding plate, (4) the BOC, (5) SHB and (6) 
+from the background sublithospheric mantle (see {numref}`fig:QQ_case1_setup`), including (1) the Bulk Oceanic Composition (BOC), (2) Serpentinized HarzBurgite
+(SHB) and (3)"thermal" layer of the overiding plate, (4) the BOC, (5) SHB and (6)
 "thermal" layer of the subducting plate, and (7) the weak seed.
 
 The geometry of these compositions is implemented as follows:
@@ -99,12 +99,12 @@ boundary. This can also be seen in {numref}`fig:QQ_case1_results`.
 
  Case 1 viscosity snapshots at 8 and 15 My.
 ```
-## Case 2a: Model with thermal evolution 
+## Case 2a: Model with thermal evolution
 
-Case 2a builds on Case 1 by including a heterogeneous initial temperature field 
-that combines the plate cooling model for the temperature in the plates with an 
-adiabatic temperature gradient below the plates. For the plate cooling model, 
-we assume that the overriding plate is 40 My old and the subducting plate 70 My. 
+Case 2a builds on Case 1 by including a heterogeneous initial temperature field
+that combines the plate cooling model for the temperature in the plates with an
+adiabatic temperature gradient below the plates. For the plate cooling model,
+we assume that the overriding plate is 40 My old and the subducting plate 70 My.
 The temperature function is too complex to comfortably write out as a function
 expression in the input file, so it is put in a new initial temperature plugin
 called ’subduction plate cooling’. This plugin needs to be compiled as a shared
@@ -121,8 +121,8 @@ The initial temperature distribution can be seen in  {numref}`fig:QQ_case2a_temp
  Case 2a temperature distribution at time 0
 ```
 
-The thermal expansivity is kept zero in Case 2a. Therefore the thermal evolution is 
-not coupled to the mechanical evolution. A high conductivity (k = 183.33 Wm<sup>-1</sup>K<sup>-1</sup>) 
+The thermal expansivity is kept zero in Case 2a. Therefore the thermal evolution is
+not coupled to the mechanical evolution. A high conductivity (k = 183.33 Wm<sup>-1</sup>K<sup>-1</sup>)
 is defined for the upper mantle to enforce the mantle adiabat in the slow convection
 system.
 
@@ -131,24 +131,24 @@ system.
 ```
 
 We can monitor the temperature evolution, however, by tracking the
-root-mean-square (RMS) temperature and the isotherm depth using 
+root-mean-square (RMS) temperature and the isotherm depth using
 two plugins called "composition_trms_statistics" and "isotherm depth".
-To this end, we add the postprocessors "composition RMS temperature statistics" 
-and "isotherm depth" to the prm file. The RMS temperature is tracked 
-over the subducting plate (comprising BOC_SP, SHB_SP, thermal_SP) 
-and the whole domain over time. And the isotherm temperature to be 
+To this end, we add the postprocessors "composition RMS temperature statistics"
+and "isotherm depth" to the prm file. The RMS temperature is tracked
+over the subducting plate (comprising BOC_SP, SHB_SP, thermal_SP)
+and the whole domain over time. And the isotherm temperature to be
 tracked is prescribed as 800 C.
 
 ```{literalinclude} Case2a_postprocessing.prm
 
 ```
 
-{numref}`fig:QQ_case2a_diagnostics` shows the RMS temperature, 
-800 C isotherm depth as well as the other diagnostics. The 800 C isotherm 
+{numref}`fig:QQ_case2a_diagnostics` shows the RMS temperature,
+800 C isotherm depth as well as the other diagnostics. The 800 C isotherm
 depth continuously increases over time, but towards the end at a slower rate.
-The RMS temperature of the whole domain keeps decreasing due to the 
-input of cold subducting plate into model domain. The slab RMS temperature 
-decreases at the initial stage, then it goes up due to the slab being warmed up by the 
+The RMS temperature of the whole domain keeps decreasing due to the
+input of cold subducting plate into model domain. The slab RMS temperature
+decreases at the initial stage, then it goes up due to the slab being warmed up by the
 mantle. Notice that the other diagnostics are indeed the same as for Case 1.
 
 ```{figure-md} fig:QQ_case2a_diagnostics
@@ -160,9 +160,9 @@ mantle. Notice that the other diagnostics are indeed the same as for Case 1.
 ## Case 2b: Model with a temperature-dependent density
 
 Case 2b builds on case 2a.  Compared to Case2a, the thermal expansivity in Case 2b
-is set to 2.5e-5 K<sup>-1</sup> instead of 0. Therefore, temperature feeds into the density 
+is set to 2.5e-5 K<sup>-1</sup> instead of 0. Therefore, temperature feeds into the density
 and therefore into the stokes equations. In addition, the benchmark uses different reference temperatures for each composition, but only one value can be specified for the reference temperature
-in ASPECT. Therefore, we adapted the reference densities for the different compositional fields to reflect the different reference temperatures. All the other parameters are 
+in ASPECT. Therefore, we adapted the reference densities for the different compositional fields to reflect the different reference temperatures. All the other parameters are
 identical to case2a:
 
 ```{literalinclude} kinematically_driven_subduction_2d_case2b.prm
@@ -174,9 +174,9 @@ The density evolution can be seen in {numref}`fig:QQ_case2b_density_evolution`. 
 <img src="Case2b_density_evolution.*" />
  Case2b density evolution
 ```
-Therefore, the  subduction in this case is much slower than that in case1 and 2b (see {numref}`fig:QQ_case2b_diagnostics`). The subducting plate does not reach 
-the bottom in 15 Myr, i.e., the third stage of case 1 and 2b is missing in this 
-case. 
+Therefore, the  subduction in this case is much slower than that in case1 and 2b (see {numref}`fig:QQ_case2b_diagnostics`). The subducting plate does not reach
+the bottom in 15 Myr, i.e., the third stage of case 1 and 2b is missing in this
+case.
 
 ```{figure-md} fig:QQ_case2b_diagnostics
 <img src="Case2b_diagnostics.*" />
@@ -184,8 +184,8 @@ case.
  ASPECT Case2b diagnostic quantities
 ```
 
-The root mean square velocity over the whole domain is overall higher than the previous cases(see {numref}`fig:QQ_case2b_diagnostics`).This is due to higher velocities in the 
-left side of the domain where a second convection cell forms (see {numref}`fig:QQ_case2b_velocity_evolution`) 
+The root mean square velocity over the whole domain is overall higher than the previous cases(see {numref}`fig:QQ_case2b_diagnostics`).This is due to higher velocities in the
+left side of the domain where a second convection cell forms (see {numref}`fig:QQ_case2b_velocity_evolution`)
 
 ```{figure-md} fig:QQ_case2b_velocity_evolution
 <img src="Case2b_velocity_evolution.*" />
