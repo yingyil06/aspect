@@ -1,4 +1,4 @@
-# We included a shared library for using the initial temperature plugin and the isotherm depth, composition RMS temperature, trench location postprocessors.
+# We include a shared library with a customized initial temperature plugin and the required isotherm depth, composition RMS temperature, and trench location postprocessors.
 set Additional shared libraries            = $ASPECT_SOURCE_DIR/cookbooks/kinematically_driven_subduction_2d/libsubduction_plate_cooling.so
 
 # We fix temperature on the top and bottom,

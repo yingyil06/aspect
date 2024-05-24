@@ -8,7 +8,7 @@ increasingly complex cases we will go from isoviscous materials without any
 temperature effects to a fully thermo-mechanical, nonlinear, strain-weakened
 visco-plastic, externally-driven model of oceanic subduction. The setup is
 outlined in {numref}`fig:QQ_setup`. The models are run for 15 My
-and slab tip depth, trench location, RMS velocity and temperature, and viscous
+and slab tip depth, trench location, root-mean-square (RMS) velocity and temperature, and viscous
 dissipation are monitored. In addition, we discuss the effects of the element
 size of the subduction interface and crustal layers, viscosity averaging and
 the solver tolerance.
@@ -23,7 +23,7 @@ the solver tolerance.
 
 The Case 1 model setup considers seven materials (compositional fields) apart
 from the background sublithospheric mantle (see {numref}`fig:QQ_case1_setup`), including (1) the Bulk Oceanic Composition (BOC), (2) Serpentinized HarzBurgite
-(SHB) and (3)"thermal" layer of the overiding plate, (4) the BOC, (5) SHB and (6)
+(SHB) and (3) "thermal" layer of the overiding plate, (4) the BOC, (5) SHB and (6)
 "thermal" layer of the subducting plate, and (7) the weak seed.
 
 The geometry of these compositions is implemented as follows:
@@ -184,7 +184,7 @@ case.
  ASPECT Case2b diagnostic quantities
 ```
 
-The root mean square velocity over the whole domain is overall higher than the previous cases(see {numref}`fig:QQ_case2b_diagnostics`).This is due to higher velocities in the
+The RMS velocity over the whole domain is overall higher than the previous cases(see {numref}`fig:QQ_case2b_diagnostics`).This is due to higher sub-lithospheric velocities on the
 left side of the domain where a second convection cell forms (see {numref}`fig:QQ_case2b_velocity_evolution`)
 
 ```{figure-md} fig:QQ_case2b_velocity_evolution
